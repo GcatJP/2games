@@ -247,8 +247,10 @@
         transition: transform 0.1s ease;
       }
       .choice-btn img {
-        max-width: 100%;
-        max-height: 100%;
+        width: 100%;
+        height: 100%;
+        min-width: 0;
+        min-height: 0;
         object-fit: contain;
         pointer-events: none;
       }
@@ -511,9 +513,9 @@
       const QUESTIONS = [
         { img: "../images/eat.png", answer: "I eat." },
         { img: "../images/watch.png", answer: "I watch." },
-        { img: "../images/go-to.png", answer: "I go to school." },
+        { img: "../images/go.png", answer: "I go to school." },
         { img: "../images/draw.png", answer: "I draw." },
-        { img: "../images/live-in.png", answer: "I live in Japan." },
+        { img: "../images/live.png", answer: "I live in Japan." },
         { img: "../images/play.png", answer: "I play." },
       ];
 
