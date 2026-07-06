@@ -224,25 +224,26 @@
       /* PORTRAIT IPHONE */
       @media screen and (orientation: portrait) and (max-width: 430px) {
         h1 {
-          font-size: clamp(1.2rem, 12vw, 4rem) !important;
+          font-size: clamp(1.1rem, 10.5vw, 3.9rem) !important;
           padding: 0.3em 0.5em !important;
-          -webkit-text-stroke: 1.5px yellow;
+          -webkit-text-stroke: 1.5px var(--bark-dark);
           line-height: 1;
+          margin-top: max(40px, env(safe-area-inset-top, 30px)) !important;
         }
 
         .grid-wrapper {
-          padding: 3vh 9vw 2vw !important;
+          padding: 3.5vh 9vw 2vw !important;
         }
 
         .grid {
-          gap: 18px !important;
+          gap: 23px !important;
           width: 100% !important;
-          margin-top: -4vh !important;
+          margin-top: -5vh !important;
         }
 
         .btn {
-          height: clamp(80px, 20vw, 140px) !important;
-          font-size: clamp(1rem, 9vw, 2.6rem) !important;
+          height: clamp(80px, 30vw, 180px) !important;
+          font-size: clamp(1rem, 10vw, 3.1rem) !important;
         }
       }
     </style>
