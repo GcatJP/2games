@@ -365,11 +365,7 @@
         font-size: 18px;
         padding: 20px;
       }
-      @media (orientation: landscape) and (max-height: 480px) {
-        .rotate-msg {
-          display: flex;
-        }
-      }
+
       @media (orientation: portrait) {
         .rotate-msg {
           display: none;
@@ -607,6 +603,22 @@
         osc.start(startTime);
         osc.stop(startTime + duration + 0.02);
       }
+
+      /* ---- robust rotate-message check (replaces CSS-only orientation media query) ---- */
+      function updateRotateMsg() {
+        const rotateMsg = document.querySelector(".rotate-msg");
+        const isLandscape = window.innerWidth > window.innerHeight;
+        const isShort = window.innerHeight < 400;
+        rotateMsg.style.display = isLandscape && isShort ? "flex" : "none";
+      }
+      window.addEventListener("resize", updateRotateMsg);
+      window.addEventListener("orientationchange", () => {
+        // iOS fires orientationchange before it finishes resizing the viewport,
+        // so re-check slightly after the fact too.
+        updateRotateMsg();
+        setTimeout(updateRotateMsg, 300);
+      });
+      updateRotateMsg();
       function playMatchJingle() {
         const ctx = getCtx(),
           now = ctx.currentTime;
