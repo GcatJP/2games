@@ -349,11 +349,6 @@
         font-size: 18px;
         padding: 20px;
       }
-      @media (orientation: landscape) and (max-height: 400px) {
-        .rotate-msg {
-          display: flex;
-        }
-      }
 
       /* win overlay */
       .overlay {
@@ -530,6 +525,23 @@
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         return audioCtx;
       }
+
+      /* ---- robust rotate-message check (replaces CSS-only orientation media query) ---- */
+      function updateRotateMsg() {
+        const rotateMsg = document.querySelector(".rotate-msg");
+        const isLandscape = window.innerWidth > window.innerHeight;
+        const isShort = window.innerHeight < 400;
+        rotateMsg.style.display = isLandscape && isShort ? "flex" : "none";
+      }
+      window.addEventListener("resize", updateRotateMsg);
+      window.addEventListener("orientationchange", () => {
+        // iOS fires orientationchange before it finishes resizing the viewport,
+        // so re-check slightly after the fact too.
+        updateRotateMsg();
+        setTimeout(updateRotateMsg, 300);
+      });
+      updateRotateMsg();
+
       function playTone(freq, startTime, duration, gainPeak) {
         const ctx = getCtx();
         const osc = ctx.createOscillator();
