@@ -45,7 +45,25 @@
         --colour-btn-border: #000000;
         --colour-heading-text: orange;
       }
-
+      .rotate-message {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: #30b0c7;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2em;
+      }
+      .rotate-message p {
+        color: var(--colour-heading-text);
+        -webkit-text-stroke: 0.8px darkorange;
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        font-size: clamp(1.2rem, 6vw, 2rem);
+        line-height: 1.4;
+      }
       html,
       body {
         width: 100%;
@@ -199,21 +217,21 @@
 
       /* LANDSCAPE IPHONE */
       @media screen and (orientation: landscape) and (max-height: 450px) {
+        .rotate-message {
+          display: flex;
+        }
+
+        h1,
+        .grid-wrapper,
+        .back-btn {
+          display: none;
+        }
+
         body {
-          background-image: url("./images/bg-land2.png");
-          background-size: cover;
-          background-position: center center;
-          background-repeat: no-repeat;
+          background-image: url("images/bg_land4.png");
           width: 100vw !important;
           min-width: 100vw !important;
           overflow-x: hidden !important;
-        }
-
-        h1 {
-          font-size: clamp(0.9rem, 6vw, 3.2rem) !important;
-          padding: 0.1em 0.5em !important;
-          margin-top: -2vh !important;
-          margin-bottom: -6vh !important;
         }
 
         .grid-wrapper {
@@ -323,6 +341,9 @@
   </head>
 
   <body>
+    <div class="rotate-message">
+      <p>🔄 Please rotate your device to portrait mode!</p>
+    </div>
     <a class="back-btn" href="index.html">← Back</a>
     <h1>Adventure Island 2</h1>
     <div class="grid-wrapper">
