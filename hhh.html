@@ -26,6 +26,7 @@
       href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap"
       rel="stylesheet"
     />
+
     <style>
       *,
       *::before,
@@ -49,7 +50,7 @@
         position: fixed;
         inset: 0;
         z-index: 100;
-        background: #30b0c7;
+        background: linear-gradient(to bottom, #bde55d, #4f7831);
         align-items: center;
         justify-content: center;
         text-align: center;
@@ -73,9 +74,10 @@
 
       body {
         font-family: var(--font-chalk);
-        background-color: #30b0c7;
+        /* Fallback gradient shows briefly before the background image loads */
+        background: linear-gradient(to bottom, #bde55d, #4f7831);
         background-size: cover;
-        background-position: center;
+        background-position: center center;
         background-repeat: no-repeat;
         display: flex;
         flex-direction: column;
@@ -103,6 +105,7 @@
         align-items: center;
         justify-content: center;
         width: 100%;
+        min-height: 0;
       }
 
       .btn {
@@ -115,12 +118,12 @@
         text-decoration: none;
         cursor: pointer;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
-        gap: 0.4em;
-        padding: 0 0.6em;
+        justify-content: center;
+        gap: 0.3em;
+        padding: 0.4em;
         width: 100%;
-        overflow: hidden;
         -webkit-user-select: none;
         user-select: none;
         -webkit-text-stroke: 2px darkorange;
@@ -129,22 +132,23 @@
           background 0.15s ease;
       }
 
-      .btn:active {
-        transform: scale(0.97);
-        background: var(--colour-btn-active);
-      }
-
       .btn-text {
         flex: 1;
         text-align: center;
-        line-height: 1.05;
+        white-space: nowrap;
+        overflow-x: hidden;
+        overflow-y: visible;
+        text-overflow: ellipsis;
+        line-height: 1.5;
       }
 
       .btn-icon {
-        height: 78%;
+        height: 45%;
         width: auto;
+        max-width: 60%;
         aspect-ratio: 1 / 1;
-        flex-shrink: 0;
+        flex-shrink: 1;
+        min-width: 0;
         object-fit: contain;
         pointer-events: none;
         user-select: none;
@@ -177,15 +181,18 @@
       /* LANDSCAPE */
       @media screen and (orientation: landscape) {
         body {
-          background-image: url("images/bg_land4.png");
+          background-image: url("./images/bg-land2.png");
+          background-size: cover;
+          background-position: center center;
+          background-repeat: no-repeat;
           overflow: hidden;
         }
 
         h1 {
-          font-size: clamp(2rem, 7vw, 7rem);
+          font-size: clamp(1.6rem, 6vw, 5.5rem);
           padding: 0.1em 0.5em;
-          margin-top: 5vh;
-          margin-bottom: -8vh;
+          margin-top: 4vh;
+          margin-bottom: -6vh;
         }
 
         .grid-wrapper {
@@ -198,13 +205,13 @@
           grid-template-columns: repeat(2, 1fr);
           grid-template-rows: repeat(2, 1fr);
           gap: clamp(10px, 2vw, 24px);
-          width: min(85vw, 900px);
+          width: min(80vw, 800px);
           height: min(70vh, 460px);
         }
 
         .btn {
-          font-size: clamp(1rem, 4.5vw, 3.4rem);
-          height: clamp(80px, 45vh, 220px);
+          font-size: clamp(1rem, 3.6vw, 2.6rem);
+          height: 100%;
         }
       }
 
@@ -228,21 +235,21 @@
         }
 
         .grid-wrapper {
-          padding: 1vh 4vw 2vh;
+          padding: 1vh 3vw 2vh;
           margin-top: 1vh;
         }
 
         .grid {
           grid-template-columns: repeat(2, 1fr) !important;
           grid-template-rows: repeat(2, 1fr) !important;
-          width: min(92vw, 500px) !important;
+          width: min(90vw, 500px) !important;
           height: min(80vh, 220px) !important;
           gap: clamp(6px, 1.5vw, 14px) !important;
         }
 
         .btn {
-          height: clamp(55px, 34vh, 130px) !important;
-          font-size: clamp(1rem, 6vw, 3.4rem) !important;
+          height: 100% !important;
+          font-size: clamp(0.6rem, 2.8vw, 1.5rem) !important;
         }
       }
 
@@ -250,13 +257,16 @@
       @media screen and (orientation: portrait) {
         body {
           overflow-y: auto;
-          background-image: url("images/bg_port4.png");
+          background-image: url("./images/bg-port2.png");
+          background-size: cover;
+          background-position: center center;
+          background-repeat: no-repeat;
         }
 
         h1 {
           font-size: clamp(1.5rem, 12vw, 4rem);
           padding: 0.3em 0.5em;
-          margin-top: max(20px, env(safe-area-inset-top, 20px));
+          margin-top: 50px;
         }
 
         .grid-wrapper {
@@ -266,33 +276,65 @@
         .grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: clamp(8px, 5vw, 50px);
+          grid-template-rows: repeat(4, 1fr);
+          gap: clamp(8px, 4vw, 30px);
           width: 100%;
           max-width: 520px;
         }
 
         .btn {
-          font-size: clamp(1.1rem, 9vw, 3.6rem);
-          height: clamp(80px, 30vw, 250px);
+          font-size: clamp(0.85rem, 6.5vw, 2.6rem);
+          height: clamp(70px, 18vw, 180px);
         }
       }
-
       /* PORTRAIT IPHONE */
       @media screen and (orientation: portrait) and (max-width: 430px) {
         h1 {
-          font-size: clamp(1.1rem, 10.5vw, 3.9rem) !important;
+          font-size: clamp(1.2rem, 12vw, 4rem) !important;
           padding: 0.3em 0.5em !important;
+          margin-top: max(50px, env(safe-area-inset-top, 50px)) !important;
+          -webkit-text-stroke: 1.5px yellow;
           line-height: 1;
-          margin-top: max(40px, env(safe-area-inset-top, 30px)) !important;
         }
 
         .grid-wrapper {
-          padding: 3.5vh 9vw 2vw !important;
+          padding: 2.5vh 9vw 2vw !important;
+        }
+
+        .grid {
+          gap: 16px !important;
+          width: 100% !important;
+          margin-top: -3vh !important;
         }
 
         .btn {
-          height: clamp(80px, 30vw, 180px) !important;
-          font-size: clamp(1rem, 10vw, 3.1rem) !important;
+          height: clamp(65px, 24vw, 150px) !important;
+          font-size: clamp(0.75rem, 7vw, 2.2rem) !important;
+        }
+        .btn-text {
+          text-align: center;
+          line-height: 1.3;
+        }
+      }
+      @media screen and (orientation: portrait) {
+        .btn {
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          padding: 0.3em 0.8em;
+        }
+
+        .btn-text {
+          flex: 1;
+          text-align: center;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          line-height: 1.3;
+        }
+
+        .btn-icon {
+          display: none;
         }
       }
     </style>
