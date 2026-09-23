@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Unit 7. The Alphabet | Adventure Island 2</title>
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      :root {
+        --font-chalk:
+          "Chalkboard SE", "Comic Sans MS", "Segoe Print", sans-serif;
+        --font-jp:
+          "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+        --green-bg: #4f7831;
+        --green-panel: #ffffff;
+        --yellow-btn: #ffd600;
+        --yellow-btn-active: #ffc200;
+        --heading: #ff8c1a;
+        --correct: #38a446;
+        --wrong: #e6483a;
+      }
+
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+      }
+
+      body {
+        font-family: var(--font-jp);
+        background: var(--green-bg);
+        background-image: radial-gradient(
+          circle at 20% 10%,
+          #5c8a3a 0%,
+          #4f7831 55%
+        );
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 14px 60px;
+      }
+
+      h1.page-title {
+        font-family: var(--font-chalk);
+        color: #fff566;
+        -webkit-text-stroke: 1.5px var(--heading);
+        text-align: center;
+        font-size: clamp(1.4rem, 6vw, 2.4rem);
+        letter-spacing: 0.02em;
+        margin-bottom: 18px;
+      }
+      .back-btn {
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #5a4200;
+        background: var(--yellow-btn);
+        border: 3px solid #333;
+        border-radius: 999px;
+        padding: 8px 16px;
+        text-decoration: none;
+        z-index: 10;
+        box-shadow: 0 3px 0 #333;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .back-btn:active {
+        transform: scale(0.96);
+        background: var(--yellow-btn-active);
+      }
+
+      @media (max-width: 480px) {
+        .back-btn {
+          top: 10px;
+          left: 10px;
+          padding: 6px 12px;
+          font-size: 0.85rem;
+        }
+      }
+      #app {
+        width: 100%;
+        max-width: 640px;
+        background: var(--green-panel);
+        border-radius: 22px;
+        border: 4px solid #2f4a1c;
+        box-shadow:
+          0 8px 0 #2f4a1c,
+          0 14px 24px rgba(0, 0, 0, 0.25);
+        padding: 22px 18px 26px;
+      }
+
+      .badge {
+        display: inline-block;
+        background: var(--heading);
+        color: #fff;
+        font-family: var(--font-chalk);
+        font-size: 0.9rem;
+        padding: 4px 14px;
+        border-radius: 999px;
+        margin-bottom: 10px;
+      }
+
+      h2.section-title {
+        font-family: var(--font-chalk);
+        color: var(--heading);
+        font-size: clamp(1.2rem, 5vw, 1.7rem);
+        margin-bottom: 14px;
+        border-bottom: 3px dashed #ffe08a;
+        padding-bottom: 8px;
+      }
+
+      p.jp {
+        font-size: clamp(1rem, 4vw, 1.15rem);
+        line-height: 1.9;
+        color: #333;
+        margin-bottom: 14px;
+      }
+
+      .en {
+        color: #1e6fbf;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+      }
+
+      /* the plural "s" is always shown in red, like the textbook */
+      .red-s {
+        color: var(--wrong);
+        font-family: var(--font-chalk);
+        font-weight: 700;
+      }
+
+      /* --- alphabet cards (Unit 7) --- */
+      .letter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+        gap: 12px;
+        margin: 16px 0 22px;
+      }
+
+      .letter-card {
+        border: 3px solid #333;
+        border-radius: 14px;
+        overflow: hidden;
+        text-align: center;
+        background: #fff;
+      }
+
+      .letter-big {
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        font-size: 2.3rem;
+        line-height: 1.1;
+        color: #333;
+        padding: 10px 0 8px;
+        background: #f4f8ee;
+        border-bottom: 3px solid #333;
+      }
+
+      .letter-sound {
+        margin: 8px auto;
+      }
+
+      /* --- vocab grid on explanation screen --- */
+      .vocab-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
+        margin: 16px 0 22px;
+      }
+
+      .vocab-card {
+        border: 3px solid #333;
+        border-radius: 14px;
+        overflow: hidden;
+        text-align: center;
+        background: #fff;
+      }
+
+      .icon-box {
+        height: 64px;
+        border-bottom: 3px solid #333;
+        background: #f4f8ee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+      }
+
+      .icon-box img,
+      .quiz-icon img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .vocab-card .label {
+        padding: 6px 4px;
+        line-height: 1.3;
+      }
+
+      .vocab-card .en-word {
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        color: #333;
+        font-size: 1.05rem;
+      }
+
+      .vocab-card .jp-word {
+        font-size: 0.85rem;
+        color: #555;
+      }
+
+      /* --- 1 tiger / 2 tigers list on explanation screen --- */
+      .plural-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 10px;
+        margin: 14px 0 22px;
+      }
+
+      .plural-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+
+      .plural-pill {
+        flex: 1;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        color: #333;
+        background: #fff;
+        border: 3px solid #333;
+        border-radius: 12px;
+        padding: 8px 6px;
+        text-align: center;
+        font-size: clamp(0.95rem, 4vw, 1.1rem);
+      }
+
+      .plural-row:active .plural-pill {
+        background: #fff9db;
+      }
+
+      .pattern-box {
+        background: #fff9db;
+        border: 3px dashed #ffc200;
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+      }
+
+      .pattern-box .line {
+        font-family: var(--font-chalk);
+        font-size: clamp(1rem, 4.5vw, 1.3rem);
+        color: #333;
+        margin: 4px 0;
+      }
+
+      .pattern-box .line .jp-sub {
+        display: block;
+        font-family: var(--font-jp);
+        font-size: 0.85rem;
+        color: #777;
+        margin-top: 2px;
+      }
+
+      .note-box {
+        background: #eaf4ff;
+        border: 3px dashed #6fb1ff;
+        border-radius: 14px;
+        padding: 12px 16px;
+        margin-bottom: 18px;
+      }
+
+      .note-box .jp {
+        margin-bottom: 0;
+        font-size: 0.98rem;
+      }
+
+      /* --- buttons --- */
+      .btn {
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        color: #5a4200;
+        background: var(--yellow-btn);
+        border: 3px solid #333;
+        border-radius: 12px;
+        cursor: pointer;
+        padding: 12px 18px;
+        font-size: clamp(1rem, 4.5vw, 1.2rem);
+        width: 100%;
+        display: block;
+        text-align: center;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .btn:active {
+        transform: scale(0.97);
+        background: var(--yellow-btn-active);
+      }
+
+      .btn-primary {
+        max-width: 260px;
+        margin: 8px auto 0;
+      }
+
+      .btn-row {
+        display: flex;
+        justify-content: center;
+        margin-top: 18px;
+      }
+
+      /* --- quiz screens --- */
+      .progress {
+        font-family: var(--font-chalk);
+        color: #777;
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+      }
+
+      .quiz-icon {
+        width: 140px;
+        height: 110px;
+        margin: 0 auto 16px;
+        border: 4px solid #333;
+        border-radius: 16px;
+        background: #f4f8ee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+      }
+
+      .quiz-icon svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* several copies of the same animal (for counting) */
+      .quiz-icon.multi {
+        width: fit-content;
+        min-width: 140px;
+        max-width: 100%;
+        height: auto;
+        min-height: 110px;
+        flex-wrap: wrap;
+        gap: 6px 10px;
+      }
+
+      .quiz-icon.multi img {
+        height: clamp(44px, 12vw, 60px);
+        width: auto;
+        max-height: none;
+      }
+
+      .question-jp {
+        text-align: center;
+        font-size: clamp(1.05rem, 4.5vw, 1.3rem);
+        margin-bottom: 4px;
+        color: #333;
+      }
+
+      .question-jp.spaced {
+        margin-bottom: 18px;
+      }
+
+      .question-en {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-family: var(--font-chalk);
+        color: var(--heading);
+        font-size: clamp(1.3rem, 5.5vw, 1.8rem);
+        margin-bottom: 18px;
+      }
+
+      .speak-btn {
+        background: var(--heading);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: clamp(30px, 7vw, 38px);
+        height: clamp(30px, 7vw, 38px);
+        font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        padding: 0;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .speak-btn:active {
+        transform: scale(0.88);
+        background: #e67a00;
+      }
+
+      .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      @media (max-width: 420px) {
+        .options {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .opt-btn {
+        font-family: var(--font-chalk);
+        font-size: clamp(0.95rem, 4vw, 1.15rem);
+        font-weight: 700;
+        background: #fff;
+        border: 3px solid #333;
+        border-radius: 12px;
+        padding: 14px 8px;
+        cursor: pointer;
+        color: #333;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .opt-btn:active {
+        transform: scale(0.97);
+      }
+
+      .opt-btn.correct {
+        background: var(--correct);
+        color: #fff;
+        border-color: #256b32;
+      }
+
+      .opt-btn.wrong {
+        background: var(--wrong);
+        color: #fff;
+        border-color: #a12c22;
+      }
+
+      .opt-btn[disabled] {
+        cursor: default;
+      }
+
+      .feedback {
+        text-align: center;
+        font-family: var(--font-chalk);
+        font-size: 1.1rem;
+        min-height: 1.6em;
+        margin-bottom: 8px;
+      }
+
+      .feedback.good {
+        color: var(--correct);
+      }
+
+      .feedback.bad {
+        color: var(--wrong);
+      }
+
+      /* --- result screen --- */
+      .result-emoji {
+        font-size: 3.2rem;
+        text-align: center;
+        margin-bottom: 6px;
+      }
+      .result-icon {
+        height: clamp(50px, 14vw, 90px);
+        width: auto;
+      }
+
+      .result-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+      .result-score {
+        text-align: center;
+        font-family: var(--font-chalk);
+        font-size: 1.6rem;
+        color: var(--heading);
+        margin-bottom: 10px;
+      }
+
+      .result-msg {
+        text-align: center;
+        font-size: 1.1rem;
+        color: #333;
+        margin-bottom: 18px;
+      }
+
+      .center-text {
+        text-align: center;
+      }
+
+      .quiz-label {
+        display: inline-block;
+        font-family: var(--font-chalk);
+        background: #eef7e2;
+        color: #4a7a2a;
+        border: 2px solid #4a7a2a;
+        border-radius: 999px;
+        padding: 3px 12px;
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1 class="page-title">Unit 7：The Alphabet</h1>
+    <a class="back-btn" href="index.html">← Back</a>
+    <div id="app"></div>
+
+    <script>
+      /* ---------------- Unit 7 data: the alphabet ---------------- */
+      // say = a spelling the browser's voice reads as the letter name (e.g. "sea" for C)
+      const LETTERS = [
+        { up: "A", low: "a", say: "ay" },
+        { up: "B", low: "b", say: "bee" },
+        { up: "C", low: "c", say: "sea" },
+        { up: "D", low: "d", say: "dee" },
+        { up: "E", low: "e", say: "ee" },
+        { up: "F", low: "f", say: "eff" },
+        { up: "G", low: "g", say: "gee" },
+        { up: "H", low: "h", say: "aitch" },
+        { up: "I", low: "i", say: "eye" },
+        { up: "J", low: "j", say: "jay" },
+        { up: "K", low: "k", say: "kay" },
+        { up: "L", low: "l", say: "el" },
+        { up: "M", low: "m", say: "em" },
+        { up: "N", low: "n", say: "en" },
+        { up: "O", low: "o", say: "oh" },
+        { up: "P", low: "p", say: "pea" },
+        { up: "Q", low: "q", say: "queue" },
+        { up: "R", low: "r", say: "are" },
+        { up: "S", low: "s", say: "ess" },
+        { up: "T", low: "t", say: "tea" },
+        { up: "U", low: "u", say: "you" },
+        { up: "V", low: "v", say: "vee" },
+        { up: "W", low: "w", say: "double you" },
+        { up: "X", low: "x", say: "ex" },
+        { up: "Y", low: "y", say: "why" },
+        { up: "Z", low: "z", say: "zee" },
+      ];
+
+      function speakText(text) {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "en-US";
+        utter.rate = 0.85;
+        window.speechSynthesis.speak(utter);
+      }
+
+      /* ---------------- render ---------------- */
+      const app = document.getElementById("app");
+
+      function render() {
+        const cards = LETTERS.map(
+          (l) => `
+               <div class="letter-card">
+                  <div class="letter-big">${l.up}${l.low}</div>
+                  <button class="speak-btn letter-sound" data-say="${l.say}" aria-label="Listen to ${l.up}">🔊</button>
+                </div>`,
+        ).join("");
+
+        app.innerHTML = `
+
+                <h2 class="section-title">アルファベット</h2>
+                <p class="jp">
+                  えいごの もじ <span class="en">A</span> から <span class="en">Z</span> までの
+                  ２６もじ です。🔊 を タップすると、<br>もじの なまえが きこえるよ！
+                </p>
+                <div class="letter-grid">${cards}</div>
+              `;
+
+        document.querySelectorAll(".letter-sound").forEach((btn) => {
+          btn.addEventListener("click", () => speakText(btn.dataset.say));
+        });
+      }
+
+      /* ---------------- init ---------------- */
+      render();
+    </script>
+  </body>
+</html>

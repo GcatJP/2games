@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Unit 1b. Reading | Adventure Island 2</title>
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      :root {
+        --font-chalk:
+          "Chalkboard SE", "Comic Sans MS", "Segoe Print", sans-serif;
+        --font-jp:
+          "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+        --green-bg: #4f7831;
+        --green-panel: #ffffff;
+        --yellow-btn: #ffd600;
+        --yellow-btn-active: #ffc200;
+        --heading: #ff8c1a;
+        --correct: #38a446;
+        --wrong: #e6483a;
+      }
+
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+      }
+
+      body {
+        font-family: var(--font-jp);
+        background: var(--green-bg);
+        background-image: radial-gradient(
+          circle at 20% 10%,
+          #5c8a3a 0%,
+          #4f7831 55%
+        );
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 14px 60px;
+      }
+
+      h1.page-title {
+        font-family: var(--font-chalk);
+        color: #fff566;
+        -webkit-text-stroke: 1.5px var(--heading);
+        text-align: center;
+        font-size: clamp(1.4rem, 6vw, 2.4rem);
+        letter-spacing: 0.02em;
+        margin-bottom: 18px;
+      }
+      .back-btn {
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #5a4200;
+        background: var(--yellow-btn);
+        border: 3px solid #333;
+        border-radius: 999px;
+        padding: 8px 16px;
+        text-decoration: none;
+        z-index: 10;
+        box-shadow: 0 3px 0 #333;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .back-btn:active {
+        transform: scale(0.96);
+        background: var(--yellow-btn-active);
+      }
+
+      @media (max-width: 480px) {
+        .back-btn {
+          top: 10px;
+          left: 10px;
+          padding: 6px 12px;
+          font-size: 0.85rem;
+        }
+      }
+      #app {
+        width: 100%;
+        max-width: 640px;
+        background: var(--green-panel);
+        border-radius: 22px;
+        border: 4px solid #2f4a1c;
+        box-shadow:
+          0 8px 0 #2f4a1c,
+          0 14px 24px rgba(0, 0, 0, 0.25);
+        padding: 22px 18px 26px;
+      }
+
+      h2.section-title {
+        font-family: var(--font-chalk);
+        color: var(--heading);
+        font-size: clamp(1.2rem, 5vw, 1.7rem);
+        margin-bottom: 14px;
+        border-bottom: 3px dashed #ffe08a;
+        padding-bottom: 8px;
+      }
+
+      p.jp {
+        font-size: clamp(1rem, 4vw, 1.15rem);
+        line-height: 1.9;
+        color: #333;
+        margin-bottom: 14px;
+      }
+
+      .en {
+        color: #1e6fbf;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+      }
+
+      .note-box {
+        background: #eaf4ff;
+        border: 3px dashed #6fb1ff;
+        border-radius: 14px;
+        padding: 12px 16px;
+        margin-bottom: 18px;
+      }
+
+      .note-box .jp {
+        margin-bottom: 0;
+        font-size: 0.98rem;
+      }
+
+      /* --- blending demo (c . a . t -> cat) --- */
+      .blend-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 10px 0 8px;
+      }
+
+      .blend-letter {
+        width: 58px;
+        height: 58px;
+        border: 3px solid #333;
+        border-radius: 12px;
+        background: #f4f8ee;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .blend-letter:active {
+        transform: scale(0.93);
+        background: #fff9db;
+      }
+
+      .blend-arrow {
+        font-size: 1.6rem;
+        color: #777;
+      }
+
+      .blend-word {
+        border: 3px solid #333;
+        border-radius: 12px;
+        background: var(--heading);
+        color: #fff;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        font-size: 1.8rem;
+        padding: 10px 22px;
+        cursor: pointer;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .blend-word:active {
+        transform: scale(0.95);
+        background: #e67a00;
+      }
+
+      .blend-caption {
+        text-align: center;
+        font-size: 0.85rem;
+        color: #777;
+        margin-bottom: 18px;
+      }
+
+      /* --- vocab grid --- */
+      .vocab-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
+        margin: 16px 0 22px;
+      }
+
+      .vocab-card {
+        border: 3px solid #333;
+        border-radius: 14px;
+        overflow: hidden;
+        text-align: center;
+        background: #fff;
+        cursor: pointer;
+      }
+
+      .vocab-card:active {
+        background: #fff9db;
+      }
+
+      .icon-box {
+        height: 64px;
+        border-bottom: 3px solid #333;
+        background: #f4f8ee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+      }
+
+      .icon-box img,
+      .quiz-icon img,
+      .opt-pic-btn img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
+      .vocab-card .label {
+        padding: 6px 4px;
+        line-height: 1.3;
+      }
+
+      .vocab-card .en-word {
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        color: #333;
+        font-size: 1.05rem;
+      }
+
+      /* text tile for "ten" / "six", color swatch for "red" / "pink" */
+      .text-tile {
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #333;
+      }
+
+      .color-swatch {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 3px solid #333;
+      }
+
+      /* --- buttons --- */
+      .btn {
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        color: #5a4200;
+        background: var(--yellow-btn);
+        border: 3px solid #333;
+        border-radius: 12px;
+        cursor: pointer;
+        padding: 12px 18px;
+        font-size: clamp(1rem, 4.5vw, 1.2rem);
+        width: 100%;
+        display: block;
+        text-align: center;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .btn:active {
+        transform: scale(0.97);
+        background: var(--yellow-btn-active);
+      }
+
+      .btn-primary {
+        max-width: 260px;
+        margin: 8px auto 0;
+      }
+
+      .btn-row {
+        display: flex;
+        justify-content: center;
+        margin-top: 18px;
+      }
+
+      /* --- quiz screen --- */
+      .progress {
+        font-family: var(--font-chalk);
+        color: #777;
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+      }
+
+      .quiz-label {
+        display: inline-block;
+        font-family: var(--font-chalk);
+        background: #eef7e2;
+        color: #4a7a2a;
+        border: 2px solid #4a7a2a;
+        border-radius: 999px;
+        padding: 3px 12px;
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+      }
+
+      .question-en {
+        text-align: center;
+        font-family: var(--font-chalk);
+        color: var(--heading);
+        font-size: clamp(1.6rem, 7vw, 2.2rem);
+        margin-bottom: 20px;
+      }
+
+      /* two big picture-choice buttons */
+      .pic-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+
+      .opt-pic-btn {
+        border: 3px solid #333;
+        border-radius: 16px;
+        background: #fff;
+        cursor: pointer;
+        padding: 14px;
+        height: 130px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .opt-pic-btn:active {
+        transform: scale(0.97);
+      }
+
+      .opt-pic-btn.correct {
+        background: #d9f2df;
+        border-color: var(--correct);
+      }
+
+      .opt-pic-btn.wrong {
+        background: #fbdcd9;
+        border-color: var(--wrong);
+      }
+
+      .opt-pic-btn[disabled] {
+        cursor: default;
+      }
+
+      .opt-pic-btn .text-tile {
+        font-size: 2.6rem;
+      }
+
+      .opt-pic-btn .color-swatch {
+        width: 70px;
+        height: 70px;
+      }
+
+      .feedback {
+        text-align: center;
+        font-family: var(--font-chalk);
+        font-size: 1.1rem;
+        min-height: 1.6em;
+        margin-bottom: 8px;
+      }
+
+      .feedback.good {
+        color: var(--correct);
+      }
+
+      .feedback.bad {
+        color: var(--wrong);
+      }
+
+      /* --- result screen --- */
+      .result-emoji {
+        font-size: 3.2rem;
+        text-align: center;
+        margin-bottom: 6px;
+      }
+
+      .result-score {
+        text-align: center;
+        font-family: var(--font-chalk);
+        font-size: 1.6rem;
+        color: var(--heading);
+        margin-bottom: 10px;
+      }
+
+      .result-msg {
+        text-align: center;
+        font-size: 1.1rem;
+        color: #333;
+        margin-bottom: 18px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1 class="page-title">Unit 1b：Reading</h1>
+    <a class="back-btn" href="index.html">← Back</a>
+    <div id="app"></div>
+
+    <script>
+      /* ---------------- data ---------------- */
+      const IMG_PATH = "../images/"; // adjust if your images live somewhere else
+      const AUDIO_PATH = "../audio/"; // your phonics sound recordings (a.m4a, b.m4a, ...)
+
+      function iconSvg(key) {
+        return `<img src="${IMG_PATH}${key}.png" alt="${key}" />`;
+      }
+
+      // Every item renders as a photo (key), a color swatch (hex), or a text tile (text) -
+      // used for "ten"/"six" (numbers) and "red"/"pink" (colors), which need no picture.
+      function renderItem(item) {
+        if (item.hex) {
+          return `<div class="color-swatch" style="background:${item.hex};"></div>`;
+        }
+        if (item.text) {
+          return `<span class="text-tile">${item.text}</span>`;
+        }
+        return iconSvg(item.key);
+      }
+
+      // The 14 words from pages 6-7
+      const WORDS = [
+        { word: "cat", key: "cat" },
+        { word: "bag", key: "bag" },
+        { word: "ten", text: "10" },
+        { word: "six", text: "6" },
+        { word: "pin", key: "pin" },
+        { word: "jam", key: "jam" },
+        { word: "red", hex: "#e6483a" },
+        { word: "dog", key: "dog" },
+        { word: "sun", key: "sun" },
+        { word: "box", key: "box" },
+        { word: "bus", key: "bus" },
+        { word: "frog", key: "frog" },
+        { word: "pink", hex: "#ff8fc7" },
+        { word: "desk", key: "desk" },
+      ];
+
+      function playLetterSound(letter) {
+        const audio = new Audio(`${AUDIO_PATH}${letter}.m4a`);
+        audio.play().catch(() => {});
+      }
+
+      function speakText(text) {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "en-US";
+        utter.rate = 0.85;
+        window.speechSynthesis.speak(utter);
+      }
+
+      /* ---------------- helpers ---------------- */
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function sample(arr, n) {
+        return shuffle(arr).slice(0, n);
+      }
+
+      /* ---------------- build the quiz ---------------- */
+      // 12 of the 14 words. English word shown as text; choose the matching picture
+      // from 2 choices (the correct one + one random other word's picture).
+      function buildQuiz() {
+        return sample(WORDS, 12).map((item) => {
+          const other = sample(
+            WORDS.filter((w) => w.word !== item.word),
+            1,
+          )[0];
+          return {
+            word: item.word,
+            options: shuffle([item, other]),
+          };
+        });
+      }
+
+      /* ---------------- state ---------------- */
+      let state = {
+        screen: "intro",
+        qIndex: 0,
+        score: 0,
+        bank: [],
+      };
+
+      function resetAll() {
+        state = {
+          screen: "intro",
+          qIndex: 0,
+          score: 0,
+          bank: buildQuiz(),
+        };
+      }
+
+      /* ---------------- render ---------------- */
+      const app = document.getElementById("app");
+
+      function render() {
+        if (state.screen === "intro") return renderIntro();
+        if (state.screen === "quiz") return renderQuiz();
+        if (state.screen === "final") return renderFinal();
+      }
+
+      function renderIntro() {
+        const cards = WORDS.map(
+          (item) => `
+               <div class="vocab-card" data-word="${item.word}">
+                  <div class="icon-box">${renderItem(item)}</div>
+                  <div class="label">
+                    <div class="en-word">${item.word}</div>
+                  </div>
+                </div>`,
+        ).join("");
+
+        app.innerHTML = `
+
+                <h2 class="section-title">もじの おとを あわせて よもう</h2>
+                <p class="jp">
+                  まえの ページで、もじには ひとつずつ
+                  <span class="en">フォニックスの おと</span> が あることを ならいました。
+                  こんどは、その おとを <b>つなげて</b>、ことばを よむ れんしゅうを します。
+                </p>
+                <p class="jp">
+                  <span class="en">cat（ねこ）</span> という ことばは、
+                  <span class="en">c</span>「ク」・ <span class="en">a</span>「ア」・
+                  <span class="en">t</span>「ト」の ３つの おとで できています。
+                  この ３つを はやく つなげて いうと、「クアト」ではなく
+                  「キャット（cat）」に なります。
+                </p>
+                <div class="blend-row">
+                  <button class="blend-letter" data-letter="c">c</button>
+                  <button class="blend-letter" data-letter="a">a</button>
+                  <button class="blend-letter" data-letter="t">t</button>
+                  <span class="blend-arrow">→</span>
+                  <button class="blend-word" data-say="cat">cat</button>
+                </div>
+                <p class="blend-caption">
+                  もじを タップすると おとが、cat を タップすると ことばが きこえるよ 🔊
+                </p>
+                <div class="note-box">
+                  <p class="jp">
+                    💡 これを <span class="en">ブレンディング（blending）</span> と いいます。
+                    ほかの ことばも、おなじように もじの おとを ひとつずつ
+                    たしかめてから、つなげて よんで みましょう。
+                  </p>
+                </div>
+
+                <h2 class="section-title">ことばの べんきょう</h2>
+                <p class="jp">
+                  この ２ページで でてくる ことばです。
+                  えを タップすると、ことばの はつおんが きこえるよ！ 🔊
+                </p>
+                <div class="vocab-grid">${cards}</div>
+
+                <p class="jp">
+                  じゅんびは いいですか？ さいごに クイズに ちょうせんしましょう！
+                </p>
+
+                <div class="btn-row">
+                  <button class="btn btn-primary" id="startBtn">クイズを はじめる</button>
+                </div>
+              `;
+
+        document.querySelectorAll(".blend-letter").forEach((btn) => {
+          btn.addEventListener("click", () =>
+            playLetterSound(btn.dataset.letter),
+          );
+        });
+        document.querySelector(".blend-word").addEventListener("click", (e) => {
+          speakText(e.currentTarget.dataset.say);
+        });
+        document.querySelectorAll(".vocab-card").forEach((card) => {
+          card.addEventListener("click", () => speakText(card.dataset.word));
+        });
+
+        document.getElementById("startBtn").onclick = () => {
+          state.screen = "quiz";
+          state.qIndex = 0;
+          state.score = 0;
+          render();
+        };
+      }
+
+      function renderQuiz() {
+        const q = state.bank[state.qIndex];
+
+        app.innerHTML = `
+                <span class="quiz-label">Quiz： Word to Picture</span>
+                <div class="progress">Question ${state.qIndex + 1} / ${state.bank.length}</div>
+                <p class="question-en">${q.word}</p>
+                <div class="pic-options" id="optionsWrap">
+                  ${q.options
+                    .map(
+                      (opt) =>
+                        `<button class="opt-pic-btn" data-correct="${opt.word === q.word}">${renderItem(opt)}</button>`,
+                    )
+                    .join("")}
+                </div>
+                <div class="feedback" id="feedback"></div>
+              `;
+
+        document.querySelectorAll(".opt-pic-btn").forEach((btn) => {
+          btn.addEventListener("click", () => onAnswer(btn), { once: true });
+        });
+
+        // read the word aloud as soon as the question appears
+        setTimeout(() => speakText(q.word), 300);
+      }
+
+      function onAnswer(btn) {
+        const allBtns = document.querySelectorAll(".opt-pic-btn");
+        const isCorrect = btn.dataset.correct === "true";
+        const feedback = document.getElementById("feedback");
+
+        allBtns.forEach((b) => {
+          b.disabled = true;
+          if (b.dataset.correct === "true") b.classList.add("correct");
+        });
+        if (!isCorrect) btn.classList.add("wrong");
+
+        if (isCorrect) {
+          state.score++;
+          feedback.textContent = "Correct! Great job!";
+          feedback.className = "feedback good";
+        } else {
+          feedback.textContent = "Not quite! Try again next time.";
+          feedback.className = "feedback bad";
+        }
+
+        setTimeout(() => {
+          if (state.qIndex < state.bank.length - 1) {
+            state.qIndex++;
+            render();
+          } else {
+            state.screen = "final";
+            render();
+          }
+        }, 1100);
+      }
+
+      function renderFinal() {
+        const pct = Math.round((state.score / state.bank.length) * 100);
+        let emoji = "🌟";
+        let msg = "とても よく できました！";
+        if (pct < 50) {
+          emoji = "🌱";
+          msg = "もういちど れんしゅうしよう。だんだん じょうずに なるよ！";
+        } else if (pct < 80) {
+          emoji = "🌿";
+          msg =
+            "よく がんばりました！つぎは もっと たかい てんすうを めざそう。";
+        }
+        app.innerHTML = `
+                <div class="result-emoji">${emoji}</div>
+                <div class="result-score">${state.score} / ${state.bank.length} てん（${pct}％）</div>
+                <p class="result-msg jp">${msg}</p>
+                <div class="btn-row">
+                  <button class="btn btn-primary" id="retryBtn">もういちど やる</button>
+                </div>
+              `;
+
+        document.getElementById("retryBtn").onclick = () => {
+          resetAll();
+          render();
+        };
+      }
+
+      /* ---------------- init ---------------- */
+      resetAll();
+      render();
+    </script>
+  </body>
+</html>
