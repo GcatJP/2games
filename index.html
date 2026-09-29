@@ -125,7 +125,11 @@
         text-align: center;
         line-height: 1.05;
       }
-
+      /* Text-only button: centre the text both ways */
+      .btn-text:only-child {
+        flex: none;
+        margin: auto;
+      }
       .btn-icon {
         height: 78%;
         width: auto;
@@ -254,18 +258,18 @@
 
     <div class="grid-wrapper">
       <div class="grid" id="main-grid">
-        <a class="btn" href="videos.html" style="background-color: #1c9406">
-          <span class="btn-text">Videos</span>
-          <img class="btn-icon" src="./images/v2.png" alt="" />
-        </a>
         <a
           class="btn"
           href="./Study/index.html"
           style="background-color: #1c9406"
         >
           <span class="btn-text">Study</span>
-          <img class="btn-icon" src="./images/study.png" alt="" />
+          <img class="btn-icon" src="./images/v2.png" alt="" />
         </a>
+        <a class="btn" href="videos.html" style="background-color: #1c9406">
+          <span class="btn-text">Videos<br />& Audio</span>
+        </a>
+
         <a class="btn" href="games.html" style="background-color: #1c9406">
           <span class="btn-text">Games</span>
           <img class="btn-icon" src="./images/g2.png" alt="" />
