@@ -139,7 +139,31 @@
         pointer-events: none;
         user-select: none;
       }
-
+      .back-btn {
+        position: fixed;
+        top: max(16px, env(safe-area-inset-top, 16px));
+        left: max(16px, env(safe-area-inset-left, 16px));
+        z-index: 60;
+        display: flex;
+        align-items: center;
+        gap: 0.3em;
+        background: var(--colour-btn-face);
+        color: var(--colour-btn-border);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 999px;
+        padding: 0.4em 0.9em;
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        font-size: 1rem;
+        text-decoration: none;
+        cursor: pointer;
+        -webkit-text-stroke: 0;
+        transition: transform 0.1s ease;
+      }
+      .back-btn:active {
+        transform: translateY(2px);
+        background: var(--colour-btn-active);
+      }
       /* LANDSCAPE */
       @media screen and (orientation: landscape) {
         body {
@@ -195,7 +219,9 @@
           min-width: 100vw !important;
           overflow-x: hidden !important;
         }
-
+        .back-btn {
+          display: none;
+        }
         h1 {
           font-size: clamp(1rem, 7vw, 4rem) !important;
           padding: 0.1em 0.5em !important;
@@ -254,6 +280,7 @@
   </head>
 
   <body>
+    <a class="back-btn" href="index.html">← Back</a>
     <h1>Adventure Island 2</h1>
 
     <div class="grid-wrapper">
