@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+  <!-- ============================================================
+     ADVENTURE ISLAND — player.html
+     ============================================================
+     Usage:  player.html?lib=584470&v=VIDEO-ID&back=units.html
+
+     CUSTOMISE THIS SECTION:
+       • HOSTS  — Bunny library ID -> pull zone hostname
+       • --bg   — background colour (matches units.html)
+     ============================================================ -->
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0,
+          maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>Video</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.13/hls.min.js"></script>
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      :root {
+        --font-chalk:
+          "Chalkboard SE", "Comic Sans MS", "Segoe Print", sans-serif;
+        --bg: #4f7831;
+        --green-dark: #3d6116;
+        --green-mid: #5a8a20;
+        --green-light: #7ab32e;
+        --colour-btn-border: #000000;
+        --ctrl-h: clamp(48px, 9vh, 72px);
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        font-family: var(--font-chalk);
+        background: var(--bg);
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(8px, 2vh, 16px);
+        padding: max(env(safe-area-inset-top), 1.5vh)
+          max(env(safe-area-inset-right), 2vw)
+          max(env(safe-area-inset-bottom), 1.5vh)
+          max(env(safe-area-inset-left), 2vw);
+        -webkit-user-select: none;
+        user-select: none;
+      }
+
+      @media (orientation: landscape) {
+        body {
+          background-image: url("./images/bg-land2.png");
+        }
+      }
+      @media (orientation: portrait) {
+        body {
+          background-image: url("./images/bg-port2.png");
+        }
+      }
+
+      /* ----------------------------------------------------------
+         SHARED BUTTON LOOK (same as units.html)
+      ---------------------------------------------------------- */
+      .btn {
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        color: yellow;
+        -webkit-text-stroke: 1.5px orange;
+        background: var(--green-dark);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition:
+          transform 0.1s ease,
+          opacity 0.15s ease;
+      }
+      .btn:active {
+        transform: scale(0.97);
+        opacity: 0.85;
+      }
+      .btn:focus-visible {
+        outline: 3px solid yellow;
+        outline-offset: 2px;
+      }
+
+      /* ----------------------------------------------------------
+         TOP BAR
+      ---------------------------------------------------------- */
+      .top {
+        width: var(--stage-w);
+        display: flex;
+        justify-content: flex-start;
+      }
+      .back {
+        width: var(--ctrl-h);
+        height: calc(var(--ctrl-h) * 0.8);
+        font-size: clamp(1.4rem, 6vh, 3rem);
+        background: rgba(0, 0, 0, 0.4);
+        border-color: yellow;
+      }
+
+      /* ----------------------------------------------------------
+         VIDEO FRAME
+      ---------------------------------------------------------- */
+      .frame {
+        width: var(--stage-w);
+        aspect-ratio: 16 / 9;
+        background: #000;
+        border: clamp(5px, 1.2vw, 12px) solid var(--green-light);
+        border-radius: 18px;
+        outline: 3px solid var(--colour-btn-border);
+        box-shadow:
+          0 0 0 clamp(3px, 0.6vw, 6px) var(--green-dark),
+          0 6px 18px rgba(0, 0, 0, 0.45);
+        overflow: hidden;
+        position: relative;
+      }
+      video {
+        width: 100%;
+        height: 100%;
+        display: block;
+        background: #000;
+        object-fit: contain;
+      }
+      .msg {
+        position: absolute;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 1rem;
+        color: yellow;
+        -webkit-text-stroke: 0.6px orange;
+        font-weight: bold;
+        font-size: clamp(1rem, 3vw, 2rem);
+        background: rgba(0, 0, 0, 0.75);
+      }
+      .msg.show {
+        display: flex;
+      }
+
+      /* ----------------------------------------------------------
+         CONTROLS
+      ---------------------------------------------------------- */
+      .controls {
+        width: var(--stage-w);
+        height: var(--ctrl-h);
+        display: flex;
+        align-items: center;
+        gap: clamp(8px, 2vw, 16px);
+      }
+      .play {
+        flex: 0 0 auto;
+        width: calc(var(--ctrl-h) * 1.4);
+        height: 100%;
+        font-size: clamp(1.4rem, 6vh, 3rem);
+      }
+
+      .bar {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        touch-action: none;
+      }
+      .track {
+        position: relative;
+        width: 100%;
+        height: clamp(16px, 3.2vh, 26px);
+        background: rgba(0, 0, 0, 0.45);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .fill {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 0%;
+        background: linear-gradient(
+          to bottom,
+          var(--green-light),
+          var(--green-mid)
+        );
+        border-right: 2px solid yellow;
+      }
+      .bar:focus-visible .track {
+        outline: 3px solid yellow;
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="top">
+      <a class="btn back" id="back" href="units.html" aria-label="Back">←</a>
+    </div>
+
+    <div class="frame">
+      <video id="vid" playsinline webkit-playsinline preload="auto"></video>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn play" id="play" aria-label="Play">▶</button>
+      <div
+        class="bar"
+        id="bar"
+        role="slider"
+        tabindex="0"
+        aria-label="Progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      >
+        <div class="track"><div class="fill" id="fill"></div></div>
+      </div>
+    </div>
+
+    <script>
+      // Bunny library ID -> pull zone hostname
+      var HOSTS = {
+        584470: "vz-43f57e2e-ea3.b-cdn.net",
+        586195: "vz-fa66c312-913.b-cdn.net",
+      };
+
+      var params = new URLSearchParams(location.search);
+      var lib = params.get("lib");
+      var vid = params.get("v");
+      var back = params.get("back");
+
+      var video = document.getElementById("vid");
+      var playBtn = document.getElementById("play");
+      var bar = document.getElementById("bar");
+      var fill = document.getElementById("fill");
+      var msg = document.getElementById("msg");
+
+      // Back button: only accept a plain local filename
+      if (back && /^[\w\-.]+\.html$/.test(back)) {
+        document.getElementById("back").href = back;
+      }
+
+      /* ---- size the stage so frame + controls always fit ---- */
+      function sizeStage() {
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+        var ctrl = Math.min(Math.max(vh * 0.09, 48), 72);
+        var chrome = ctrl * 0.8 + ctrl + 40; // back + controls + gaps
+        var maxByHeight = (vh - chrome) * (16 / 9);
+        var w = Math.min(vw * 0.96, maxByHeight, 1200);
+        document.documentElement.style.setProperty(
+          "--stage-w",
+          Math.max(w, 200) + "px",
+        );
+      }
+      sizeStage();
+      window.addEventListener("resize", sizeStage);
+
+      /* ---- load the stream ---- */
+      function showError(text) {
+        msg.textContent = text;
+        msg.classList.add("show");
+      }
+
+      var host = HOSTS[lib];
+      if (!host || !vid || !/^[0-9a-f-]{36}$/i.test(vid)) {
+        showError("Video not found");
+      } else {
+        var src = "https://" + host + "/" + vid + "/playlist.m3u8";
+        if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = src; // Safari / iOS native HLS
+        } else if (window.Hls && Hls.isSupported()) {
+          var hls = new Hls();
+          hls.loadSource(src);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.ERROR, function (e, data) {
+            if (data.fatal) showError("Can't load this video");
+          });
+        } else {
+          showError("This browser can't play the video");
+        }
+      }
+      video.addEventListener("error", function () {
+        showError("Can't load this video");
+      });
+
+      /* ---- play / pause ---- */
+      function updateBtn() {
+        var playing = !video.paused && !video.ended;
+        playBtn.textContent = playing ? "❚❚" : "▶";
+        playBtn.setAttribute("aria-label", playing ? "Pause" : "Play");
+      }
+      function toggle() {
+        if (video.paused || video.ended) {
+          video.play().catch(function () {});
+        } else {
+          video.pause();
+        }
+      }
+      playBtn.addEventListener("click", toggle);
+      video.addEventListener("click", toggle);
+      ["play", "pause", "ended"].forEach(function (ev) {
+        video.addEventListener(ev, updateBtn);
+      });
+      updateBtn();
+
+      /* ---- progress bar ---- */
+      function frac() {
+        return video.duration ? video.currentTime / video.duration : 0;
+      }
+      function draw() {
+        var f = frac();
+        fill.style.width = f * 100 + "%";
+        bar.setAttribute("aria-valuenow", Math.round(f * 100));
+      }
+      (function loop() {
+        draw();
+        requestAnimationFrame(loop);
+      })();
+
+      var dragging = false;
+      function seekTo(clientX) {
+        if (!video.duration) return;
+        var r = bar.getBoundingClientRect();
+        var f = Math.min(Math.max((clientX - r.left) / r.width, 0), 1);
+        video.currentTime = f * video.duration;
+        draw();
+      }
+      bar.addEventListener("pointerdown", function (e) {
+        dragging = true;
+        bar.setPointerCapture(e.pointerId);
+        seekTo(e.clientX);
+      });
+      bar.addEventListener("pointermove", function (e) {
+        if (dragging) seekTo(e.clientX);
+      });
+      ["pointerup", "pointercancel"].forEach(function (ev) {
+        bar.addEventListener(ev, function () {
+          dragging = false;
+        });
+      });
+      bar.addEventListener("keydown", function (e) {
+        if (!video.duration) return;
+        if (e.key === "ArrowRight") video.currentTime += 5;
+        if (e.key === "ArrowLeft") video.currentTime -= 5;
+        if (e.key === " ") {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    </script>
+  </body>
+</html>
