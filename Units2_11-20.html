@@ -393,6 +393,18 @@
         const grid = document.getElementById("main-grid");
         grid.innerHTML = "";
         units.forEach(function (unit) {
+          var m = unit.url.match(/play\/(\d+)\/([0-9a-f-]{36})/i);
+          if (m) {
+            unit = Object.assign({}, unit, {
+              url:
+                "player.html?lib=" +
+                m[1] +
+                "&v=" +
+                m[2] +
+                "&back=" +
+                encodeURIComponent(location.pathname.split("/").pop()),
+            });
+          }
           var link = document.createElement("a");
           link.className = "btn";
           link.href = unit.url;
