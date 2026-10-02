@@ -449,6 +449,7 @@
     <h1 class="page-title">Unit 4：The Weather</h1>
     <a class="back-btn" href="index.html">← Back</a>
     <div id="app"></div>
+    <script src="review.js"></script>
 
     <script>
       /* ---------------- Unit 4 data: weather ---------------- */
@@ -623,6 +624,7 @@
       ];
 
       function resetAll() {
+        Review.reset();
         state = {
           screen: "intro",
           quizIndex: 0,
@@ -800,6 +802,7 @@
           feedback.className = "feedback good";
         } else {
           playWrongSound();
+          Review.recordWrong(btn, QUIZ_META[state.quizIndex].label);
           feedback.textContent = "Not quite! Try again next time.";
           feedback.className = "feedback bad";
         }
@@ -870,6 +873,7 @@
                   <img src="../images/kh1.png" class="result-icon" alt="" />
                 </div>
                 <p class="result-msg jp">${msg}</p>
+                ${Review.html()}
                 <div class="btn-row">
                   <button class="btn btn-primary" id="retryBtn">もういちど やる</button>
                 </div>

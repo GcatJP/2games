@@ -370,6 +370,7 @@
     <h1 class="page-title">Unit 1a：Phonics</h1>
     <a class="back-btn" href="index.html">← Back</a>
     <div id="app"></div>
+    <script src="review.js"></script>
 
     <script>
       /* ---------------- Phonics data: the 26 letter sounds ---------------- */
@@ -450,6 +451,7 @@
       };
 
       function resetAll() {
+        Review.reset();
         state = {
           screen: "intro",
           qIndex: 0,
@@ -600,6 +602,7 @@
                 <div class="result-emoji">${emoji}</div>
                 <div class="result-score">${state.score} / ${state.bank.length} てん（${pct}％）</div>
                 <p class="result-msg jp">${msg}</p>
+                ${Review.html()}
                 <div class="btn-row">
                   <button class="btn btn-primary" id="retryBtn">もういちど やる</button>
                 </div>
