@@ -389,6 +389,14 @@
         <button class="reset-btn" id="playAgainBtn">Play Again 🌴</button>
       </div>
     </div>
+    <div class="overlay show" id="startOverlay">
+      <div class="win-card">
+        <div class="win-emojis">🌴 Drag and Drop 🌴</div>
+        <h2>Ready?</h2>
+        <p>Drag each word to its picture!</p>
+        <button class="reset-btn" id="startBtn">Start 🌴</button>
+      </div>
+    </div>
     <script>
       const PAIRS = [
         { img: "../images/desk.png", word: "desk" },
@@ -410,8 +418,6 @@
         return audioCtx;
       }
       /* iOS unlock: must happen inside touchend/click */
-      const SILENT =
-        "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=";
       let unlocked = false;
       function unlockAudio(e) {
         if (unlocked) return;
@@ -429,14 +435,6 @@
           src.buffer = b;
           src.connect(c.destination);
           src.start(0);
-        } catch (x) {}
-        try {
-          const a = new Audio(SILENT);
-          a.setAttribute("playsinline", "");
-          a.loop = true;
-          a.play().catch(() => {});
-          window._keepAlive =
-            a; /* lets sound play even with the silent switch on */
         } catch (x) {}
         try {
           if ("speechSynthesis" in window) {
@@ -637,6 +635,10 @@
       document
         .getElementById("playAgainBtn")
         .addEventListener("click", newGame);
+      document.getElementById("startBtn").addEventListener("click", () => {
+        unlockAudio({ type: "click" });
+        document.getElementById("startOverlay").classList.remove("show");
+      });
       newGame();
     </script>
   </body>
