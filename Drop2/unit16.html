@@ -262,7 +262,8 @@
         font-family:
           "Chalkboard SE", "Comic Sans MS", "Segoe Print", sans-serif;
         font-weight: bold;
-        font-size: clamp(28px, 11vw, 64px);
+
+        font-size: clamp(13px, 5vw, 38px);
         -webkit-text-stroke: 1px var(--ocean-deep);
       }
       .chip.drag {
@@ -276,6 +277,12 @@
       }
       .chip.used {
         visibility: hidden;
+      }
+      .chip,
+      .chip span,
+      .slot .label,
+      .slot .label span {
+        text-align: center;
       }
       .sparkle {
         position: absolute;
@@ -388,7 +395,7 @@
     <div class="wrap">
       <div class="header">
         <a class="reset-btn" href="index.html">⬅️ Back</a>
-        <h1>Unit 7</h1>
+        <h1>Unit 16</h1>
         <button class="reset-btn" id="resetBtn">Play Again 🌴</button>
       </div>
       <div class="zone targets" id="targets"></div>
@@ -414,12 +421,12 @@
       const PAIRS = [
         { top: "3", bottom: "three" },
         { top: "7", bottom: "seven" },
-        { top: "88", bottom: "eighty-eight" },
-        { top: "54", bottom: "fifty-four" },
-        { top: "27", bottom: "twenty-seven" },
+        { top: "88", bottom: "eighty- eight" },
+        { top: "54", bottom: "fifty- four" },
+        { top: "27", bottom: "twenty- seven" },
         { top: "16", bottom: "sixteen" },
         { top: "90", bottom: "ninety" },
-        { top: "67", bottom: "sixty-seven" },
+        { top: "67", bottom: "sixty- seven" },
       ];
 
       /* audio */
